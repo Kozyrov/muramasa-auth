@@ -23,6 +23,7 @@ router.post('/', auth.optional, (req, res, next) => {
       });
     }
   
+    // add check to make sure a user with the same email has not already registered
     const finalUser = new Users(user);
   
     finalUser.setPassword(user.password);
@@ -59,11 +60,10 @@ router.post('/login', auth.optional, (req, res, next) => {
       if(passportUser) {
         const user = passportUser;
         user.token = passportUser.generateJWT();
-  
+        
         return res.json({ user: user.toAuthJSON() });
       }
-  
-      return status(400).info;
+      return res.status(400).send(info);
     })(req, res, next);
   });
 
