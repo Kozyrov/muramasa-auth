@@ -60,7 +60,7 @@ router.post('/login', auth.optional, (req, res, next) => {
       if(passportUser) {
         const user = passportUser;
         user.token = passportUser.generateJWT();
-        
+
         return res.json({ user: user.toAuthJSON() });
       }
       return res.status(400).send(info);
@@ -70,13 +70,12 @@ router.post('/login', auth.optional, (req, res, next) => {
 //GET - Validate (required, only authenticated users have access)
 router.get('/current', auth.required, (req, res, next) => {
     const { payload: { id } } = req;
-  
     return Users.findById(id)
       .then((user) => {
         if(!user) {
+          //under what circumstances would this check be performed? gotta figure out if this is needed or not.
           return res.sendStatus(400);
         }
-  
         return res.json({ user: user.toAuthJSON() });
       });
   });
